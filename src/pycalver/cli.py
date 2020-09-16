@@ -85,6 +85,9 @@ def cli(verbose: int = 0) -> None:
 @click.option("--major", is_flag=True, default=False, help="Increment major component.")
 @click.option("--minor", is_flag=True, default=False, help="Increment minor component.")
 @click.option("--patch", is_flag=True, default=False, help="Increment patch component.")
+@click.option("--inc-month", is_flag=True, default=False, help="Increment counter reset each month.")
+@click.option("--inc-quarter", is_flag=True, default=False, help="Increment counter reset each quarter.")
+@click.option("--inc-year", is_flag=True, default=False, help="Increment counter reset each year.")
 def test(
     old_version: str,
     pattern    : str  = "{pycalver}",
@@ -93,6 +96,9 @@ def test(
     major      : bool = False,
     minor      : bool = False,
     patch      : bool = False,
+    inc_month  : bool = False,
+    inc_quarter: bool = False,
+    inc_year   : bool = False,
 ) -> None:
     """Increment a version number for demo purposes."""
     _configure_logging(verbose=max(_VERBOSE, verbose))
@@ -320,6 +326,9 @@ def _try_print_diff(cfg: config.Config, new_version: str) -> None:
 @click.option("--major", is_flag=True, default=False, help="Increment major component.")
 @click.option("--minor", is_flag=True, default=False, help="Increment minor component.")
 @click.option("--patch", is_flag=True, default=False, help="Increment patch component.")
+@click.option("--inc-month", is_flag=True, default=False, help="Increment counter reset each month.")
+@click.option("--inc-quarter", is_flag=True, default=False, help="Increment counter reset each quarter.")
+@click.option("--inc-year", is_flag=True, default=False, help="Increment counter reset each year.")
 def bump(
     release    : typ.Optional[str] = None,
     verbose    : int  = 0,
@@ -329,6 +338,9 @@ def bump(
     major      : bool = False,
     minor      : bool = False,
     patch      : bool = False,
+    inc_month  : bool = False,
+    inc_quarter: bool = False,
+    inc_year   : bool = False,
 ) -> None:
     """Increment the current version string and update project files."""
     verbose = max(_VERBOSE, verbose)
@@ -354,6 +366,9 @@ def bump(
         major=major,
         minor=minor,
         patch=patch,
+        inc_month=inc_month,
+        inc_quarter=inc_quarter,
+        inc_year=inc_year,
     )
     if new_version is None:
         is_semver      = "{semver}" in cfg.version_pattern

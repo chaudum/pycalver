@@ -1,5 +1,6 @@
 # Changelog for https://gitlab.com/mbarkhau/pycalver
 
+ - Add: Support for incrental counters that are reset monthly/quarterly/yearly
 
 ## v201907.0036
 

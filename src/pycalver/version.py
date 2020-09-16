@@ -56,6 +56,7 @@ PATTERN_PART_FIELDS = {
     'BBBBB'      : 'bid',
     'BBBBBB'     : 'bid',
     'BBBBBBB'    : 'bid',
+    'inc'        : 'inc',
 }
 
 
@@ -146,6 +147,7 @@ class VersionInfo(typ.NamedTuple):
     major   : int
     minor   : int
     patch   : int
+    inc     : int 
     bid     : str
     tag     : str
 
@@ -201,6 +203,7 @@ def _parse_field_values(field_values: FieldValues) -> VersionInfo:
     major = int(fvals['major']) if 'major' in fvals else 0
     minor = int(fvals['minor']) if 'minor' in fvals else 0
     patch = int(fvals['patch']) if 'patch' in fvals else 0
+    inc = int(fvals['inc']) if 'inc' in fvals else 1
 
     return VersionInfo(
         year=year,
@@ -215,6 +218,7 @@ def _parse_field_values(field_values: FieldValues) -> VersionInfo:
         patch=patch,
         bid=bid,
         tag=tag,
+        inc=inc,
     )
 
 
@@ -451,6 +455,9 @@ def format_version(vinfo: VersionInfo, pattern: str) -> str:
     return full_pattern.format(**kwargs)
 
 
+DateInfo = typ.Tuple[int, int, int]
+
+
 def incr(
     old_version: str,
     pattern    : str = "{pycalver}",
@@ -459,6 +466,9 @@ def incr(
     major  : bool = False,
     minor  : bool = False,
     patch  : bool = False,
+    inc_month  : bool = False,
+    inc_quarter: bool = False,
+    inc_year   : bool = False,
 ) -> typ.Optional[str]:
     """Increment version string.
 
@@ -474,8 +484,8 @@ def incr(
 
     cur_cal_nfo = cal_info()
 
-    old_date = (old_vinfo.year or 0, old_vinfo.month or 0, old_vinfo.dom or 0)
-    cur_date = (cur_cal_nfo.year   , cur_cal_nfo.month   , cur_cal_nfo.dom)
+    old_date: DateInfo = (old_vinfo.year or 0, old_vinfo.month or 0, old_vinfo.dom or 0)
+    cur_date: DateInfo = (cur_cal_nfo.year   , cur_cal_nfo.month   , cur_cal_nfo.dom)
 
     if old_date <= cur_date:
         cur_vinfo = cur_vinfo._replace(**cur_cal_nfo._asdict())
@@ -483,6 +493,9 @@ def incr(
         logger.warning(f"Version appears to be from the future '{old_version}'")
 
     cur_vinfo = cur_vinfo._replace(bid=lex_id.next_id(cur_vinfo.bid))
+    cur_vinfo = cur_vinfo._replace(
+        inc=next_inc(cur_vinfo.inc, inc_month, inc_quarter, inc_year, old_date, cur_date)
+    )
 
     if major:
         cur_vinfo = cur_vinfo._replace(major=cur_vinfo.major + 1, minor=0, patch=0)
@@ -500,6 +513,39 @@ def incr(
         return None
     else:
         return new_version
+
+
+def next_inc(
+        inc: int,
+        inc_month: bool,
+        inc_quarter: bool,
+        inc_year: bool,
+        old_date: DateInfo,
+        cur_date: DateInfo,
+) -> int:
+    """
+    Increment the counter based on the reset options (monthly, quarterly, yearly).
+
+    >>> next_inc(3, True, False, False, (2020, 8, 21), (2020, 8, 24))
+    4
+    >>> next_inc(3, True, False, False, (2020, 8, 21), (2020, 9, 7))
+    1
+    >>> next_inc(3, False, True, False, (2020, 8, 21), (2020, 9, 7))
+    4
+    >>> next_inc(3, False, True, False, (2020, 8, 21), (2020, 10, 7))
+    1
+    >>> next_inc(3, False, False, True, (2020, 8, 21), (2020, 10, 7))
+    4
+    >>> next_inc(3, False, False, True, (2020, 8, 21), (2021, 1, 7))
+    1
+    """
+    if inc_month and old_date[1] < cur_date[1]:
+        return 1
+    if inc_quarter and _quarter_from_month(old_date[1]) < _quarter_from_month(cur_date[1]):
+        return 1
+    if inc_year and old_date[0] < cur_date[0]:
+        return 1
+    return inc + 1
 
 
 def to_pep440(version: str) -> str:

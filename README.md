@@ -210,26 +210,27 @@ and also to replace version strings in your projects files. Everything except
 for valid placeholders is treated as literal text. Available placeholders are:
 
 
-|     placeholder     |  range / example(s) |     comment     |
-|---------------------|---------------------|-----------------|
-| `{pycalver}`        | v201902.0001-beta   |                 |
-| `{pep440_pycalver}` | 201902.1b0          |                 |
-| `{year}`            | 2019...             | `%Y`            |
-| `{yy}`              | 18, 19..99, 01, 02  | `%y`            |
-| `{quarter}`         | 1, 2, 3, 4          |                 |
-| `{month}`           | 09, 10, 11, 12      | `%m`            |
-| `{iso_week}`        | 00..53              | `%W`            |
-| `{us_week}`         | 00..53              | `%U`            |
-| `{dom}`             | 01..31              | `%d`            |
-| `{doy}`             | 001..366            | `%j`            |
-| `{build}`           | .0123               | lexical id      |
-| `{build_no}`        | 0123, 12345         | ...             |
-| `{release}`         | -alpha, -beta, -rc  | --release=<tag> |
-| `{release_tag}`     | alpha, beta, rc     | ...             |
-| `{semver}`          | 1.2.3               |                 |
-| `{MAJOR}`           | 1..9, 10..99, 100.. | --major         |
-| `{MINOR}`           | 1..9, 10..99, 100.. | --minor         |
-| `{PATCH}`           | 1..9, 10..99, 100.. | --patch         |
+|     placeholder     |  range / example(s) |     comment                          |
+|---------------------|---------------------|--------------------------------------|
+| `{pycalver}`        | v201902.0001-beta   |                                      |
+| `{pep440_pycalver}` | 201902.1b0          |                                      |
+| `{year}`            | 2019...             | `%Y`                                 |
+| `{yy}`              | 18, 19..99, 01, 02  | `%y`                                 |
+| `{quarter}`         | 1, 2, 3, 4          |                                      |
+| `{month}`           | 09, 10, 11, 12      | `%m`                                 |
+| `{iso_week}`        | 00..53              | `%W`                                 |
+| `{us_week}`         | 00..53              | `%U`                                 |
+| `{dom}`             | 01..31              | `%d`                                 |
+| `{doy}`             | 001..366            | `%j`                                 |
+| `{build}`           | .0123               | lexical id                           |
+| `{build_no}`        | 0123, 12345         | ...                                  |
+| `{release}`         | -alpha, -beta, -rc  | --release=<tag>                      |
+| `{release_tag}`     | alpha, beta, rc     | ...                                  |
+| `{semver}`          | 1.2.3               |                                      |
+| `{MAJOR}`           | 1..9, 10..99, 100.. | --major                              |
+| `{MINOR}`           | 1..9, 10..99, 100.. | --minor                              |
+| `{PATCH}`           | 1..9, 10..99, 100.. | --patch                              |
+| `{inc}`             | 1..9, 10..99, 100.. | --inc-month/--inc-quarter/--inc-year |
 
 
 There are some limitations to keep in mind:
